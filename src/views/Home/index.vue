@@ -12,13 +12,12 @@
 import Headers from "@/components/headers.vue";
 import Slide from "./slide";
 import List from "./heroList";
-import { mapState } from "vuex";
+import { mapState,mapActions } from "vuex";
 
 export default {
   data() {
     return {
       passHero: [],
-      showDetail: false
     };
   },
 
@@ -27,8 +26,8 @@ export default {
     List,
     Headers
   },
-  mounted() {
-    
+  async mounted() {
+    if (!Object.prototype.hasOwnProperty.call(this.initData, 'heroes')) await this.getData()
     this.passHero = this.initData.heroes
   },
   
@@ -36,7 +35,7 @@ export default {
     ...mapState(["initData"]),
   },
   methods: {
-
+    ...mapActions(['getData']),
     getFilters(props) {
       // 需要将 heroes 中每个英雄的的字符串 filters 转化成数组，累积获得 filters 的数组
       let filters = [],

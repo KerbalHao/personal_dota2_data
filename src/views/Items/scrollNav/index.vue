@@ -2,15 +2,16 @@
   <div class="scroll-list-wrap">
     <cube-scroll ref="scroll" :data="items">
       <ul class="items-list">
-        <li class="item" v-for="(item,index) in items" :key="index"  @click="showDetail(item)">
+        <li class="item" v-for="(item,index) in items" :key="index"  @click="showDetail(item, bought)">
           <div class="item-info">
             <img :src="item.icon" />
             <div class="info">
               <div class="name">{{item.name}}</div>
               <div class="price">$ {{item.RealCost}}</div>
+              <div class="bought" v-show='item.bought'>已购买 {{item.bought_num}} 件</div>
             </div>
           </div>
-          <div class="control">
+          <div class="control" v-if='!bought'>
             <cart-control :item='item' @add='onAdd'></cart-control>
           </div>
         </li>
@@ -34,11 +35,18 @@ export default {
       default: () => {
         [];
       }
+    },
+    bought: {
+      type: Boolean,
+      default: false
     }
   },
+  mounted() {
+    console.log(this.items)
+  },
   methods: {
-    showDetail(item) {
-      this.$refs.detail.show(item);
+    showDetail(item, bought) {
+      this.$refs.detail.show(item, bought);
     },
     onAdd(el) {
       // 调用父组件中的 Cart 组件中的 drop 方法实现小球动画

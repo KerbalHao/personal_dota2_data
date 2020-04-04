@@ -8,15 +8,14 @@
         <router-link to="mine/login" v-if="!showName">
           <cube-button :inline="true" :primary="true">登录</cube-button>
         </router-link>
-        <div  v-else>
+        <div v-else>
           <div class="user-name">{{userName}}</div>
-          <cube-button :inline="true" :primary="true" @click='logout'>注销</cube-button>
-
+          <cube-button :inline="true" :primary="true" @click="logout">注销</cube-button>
         </div>
       </div>
 
       <ul class="list">
-        <li v-for="(item,index) in list" :key="index">{{item.text}}</li>
+          <li v-for="(item,index) in list" :key="index" @click='handleClick(item.value)'>{{item.text}}</li>
       </ul>
     </div>
   </div>
@@ -24,7 +23,8 @@
 
 <script>
 import Headers from "@/components/headers";
-import {validate} from '@/api'
+import { validate } from "@/api";
+import {showLogin} from '@/components/utils'
 import { mapState, mapActions } from "vuex";
 let list = [
   {
@@ -42,7 +42,7 @@ export default {
       list,
       showLogin: true,
       showName: false,
-      userName: ''
+      userName: ""
     };
   },
   components: {
@@ -52,48 +52,53 @@ export default {
     ...mapState(["userData"])
   },
   async mounted() {
-    let res = await validate()
-    console.log(res)
+    let res = await validate();
     if (res.code == 0) {
-      this.showName = true
-      console.log(this.userData)
-      this.userName = this.userData.userName
-
+      this.showName = true;
+      this.userName = this.userData.userName;
     } else {
-      this.showName = false
+      this.showName = false;
     }
   },
   methods: {
-    ...mapActions(['handleLogout']),
+    ...mapActions(["handleLogout"]),
     async logout() {
-       this.$createDialog({
-        type: 'confirm',
-        icon: 'cubeic-alert',
+      this.$createDialog({
+        type: "confirm",
+        icon: "cubeic-alert",
         content: `是否确认登出账号？`,
         confirmBtn: {
-          text: '确定',
+          text: "确定",
           active: true,
           disabled: false,
-          href: 'javascript:;'
+          href: "javascript:;"
         },
         cancelBtn: {
-          text: '取消',
+          text: "取消",
           active: false,
           disabled: false,
-          href: 'javascript:;'
+          href: "javascript:;"
         },
         onConfirm: async () => {
-          await this.handleLogout()
-          this.showName = false
+          await this.handleLogout();
+          this.showName = false;
           this.$createToast({
-            type: 'warn',
+            type: "warn",
             time: 1000,
-            txt: '您已成功登出'
-          }).show()
-        },
-      }).show()
+            txt: "您已成功登出"
+          }).show();
+        }
+      }).show();
+    },
+    async handleClick(value) {
+      let res = await validate()
+      if (res.code != 0) {
+        showLogin.call(this)
+      } else if (res.code == 0) {
+        this.$router.push(`/mine/${value}`)
+      }
     }
-  },
+  }
 };
 </script>
 
@@ -126,12 +131,11 @@ export default {
     }
 
     .user-name {
-      color: black
-      position: absolute
-      left 50%
-      transform translate3d(-50%, 130%,0)
-      height  1rem
-
+      color: black;
+      position: absolute;
+      left: 50%;
+      transform: translate3d(-50%, 130%, 0);
+      height: 1rem;
     }
   }
 
@@ -147,6 +151,4 @@ export default {
     }
   }
 }
-
-
 </style>

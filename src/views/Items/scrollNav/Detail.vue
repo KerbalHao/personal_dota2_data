@@ -5,7 +5,7 @@
 
     <div class="detail">
       <div class="header">
-        <img :src="'http://i1.17173cdn.com/xz7c5b/YWxqaGBf/images/data/'+item.icon" alt />
+        <img :src="item.icon" alt />
       <div class="detail-info">
         <h2><span>物品名：</span><span>{{item.name}}</span></h2>
         <div class="price"><span>售价：</span><span>${{item.RealCost}}</span></div>
@@ -43,7 +43,7 @@
             <cube-scroll ref="scroll" :data="item.Materials">
               <div class="contentOfMaterial">
                 <span class='listM' v-for='item in item.Materials' :key='item.numId'>
-                  <img :src="'http://i1.17173cdn.com/xz7c5b/YWxqaGBf/images/data/'+item.icon" alt=""><br>
+                  <img :src="item.icon" alt=""><br>
                   {{item.name}}<br>
                   ${{item.RealCost}}
                 </span>
@@ -52,8 +52,8 @@
           </div>
         </div>
       </div>
-      <cube-button :primary='true' v-show='item.num === 0' @click="addToCart(item,'plus')">加入购物车</cube-button>
-      <div class="cart-control" v-show='item.num > 0' >
+      <cube-button :primary='true' v-show='item.num === 0' @click="addToCart(item,'plus')" v-if='!bought'>加入购物车</cube-button>
+      <div class="cart-control" v-if='!bought' v-show='item.num > 0' >
         <cart-control :item='item' ></cart-control>
       </div>
     </div>
@@ -69,7 +69,8 @@ import {mapActions} from 'vuex'
 export default {
   data() {
     return {
-      item: {}
+      item: {},
+      bought: false
     };
   },
   components: {
@@ -83,6 +84,7 @@ export default {
       ** 接收父元素通过函数传递过来的 item，并赋值给 this.item 用于渲染
       */
       this.item = item;
+      this.bought = true
       this.$refs.popup.show();
     },
 

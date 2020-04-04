@@ -49,6 +49,7 @@ export default {
           modelKey: 'passWord',
           label: '密码',
           props: {
+            type:'password',
             placeholder: '请输入密码'
           },
           trigger: blur,
@@ -65,12 +66,7 @@ export default {
   },
   methods: {
     ...mapActions(['setUserData','setUser']),
-    // beforeRouteEnter (to, from, next) {
-    //   console.log(from, to)
-    //   next()
-    // },
      async submitHandler() {
-      // console.log(model)
       await this.setUser(this.model)
       this.$nextTick(() => {
         if (this.userData.userName !== undefined && this.userData.userName !=='dota2' ) {

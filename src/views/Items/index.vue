@@ -1,7 +1,7 @@
 <template>
   <div id="item">
     <headers text='物品'></headers>
-    <cube-loading :size="40" v-show='!this.data'></cube-loading>
+    <cube-loading :size="40" v-show='this.data.length == 0'></cube-loading>
     <drawer :filters="category" @confirm="confirm"></drawer>
     <h2>{{name}}</h2>
     <scroll-nav :items="data"></scroll-nav>
@@ -25,7 +25,7 @@ export default {
     };
   },
   async mounted() {
-    if (this.initData.items == undefined || this.initData.items.length  === 0) await this.getData()
+    if (!Object.prototype.hasOwnProperty.call(this.initData, 'heroes')) await this.getData()
     this.data = this.initData.items;
     // 初始化传递到 Drawer 组件的数据
     this.setCatagory();

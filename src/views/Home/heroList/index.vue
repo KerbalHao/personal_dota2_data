@@ -2,7 +2,7 @@
   <cube-scroll ref="scroll2" class="scroll-list-inner-wrap" nest-mode="free">
     <ul class="cube-scroll-list">
       <li class="cube-scroll-item" v-for="item in heroes" :key="item.id">
-        <router-link :to='`home/${item.id}`'>
+        <router-link :to="{name:'detail',params:{id: item.id}}">
           <img :src="item.hoverImgSrc" :alt="item.name" />
           <span>{{item.name}} </span><br><i class='cubeic-like' v-show='item.like'> </i>
         </router-link>
@@ -14,7 +14,6 @@
 <script>
 export default {
   props: ['heroes'],
-  
 };
 </script>
 

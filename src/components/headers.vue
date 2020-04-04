@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <i class="cubeic-back" v-if="$route.path.includes('home/')" @click="goBack"></i>
+    <i class="cubeic-back" v-if="show" @click="goBack"></i>
     <!-- <i  class='cubeic-location' v-if="$route.path.includes('items')"></i> -->
     <slot>{{text}}</slot>
   </div>
@@ -8,6 +8,14 @@
 
 <script>
 export default {
+  data() {
+    return {
+      show: false
+    }
+  },
+  mounted() {
+      this.show = this.$route.path.includes('home/')||this.$route.path.includes('mine/')
+    },
   props: {
     text: {
       type: String,
@@ -18,7 +26,7 @@ export default {
  },
   methods: {
     goBack() {
-      this.$router.push('/home');
+      this.$router.go(-1);
     }
   }
 };

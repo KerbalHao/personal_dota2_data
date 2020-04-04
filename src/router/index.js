@@ -37,10 +37,16 @@ const routes = [
     path: '/mine/login',
     name: 'Login',
     component: () => import('@/views/Mine/Login'),
-    // beforeEnter: (to, from, next) => {
-    //   console.log(to,from)
-    //   next()
-    // }
+  },
+  {
+    path:'/mine/favourite',
+    name: 'Favourite',
+    component: () => import('@/views/Mine/MyFavourite')
+  },
+  {
+    path:'/mine/bought',
+    name: 'Bought',
+    component: () => import('@/views/Mine/MyBought')
   }
   
 ]

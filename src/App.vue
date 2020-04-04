@@ -40,7 +40,7 @@ export default {
     };
   },
   async mounted() {
-    if (!this.initData.heroes) {
+    if (!Object.prototype.hasOwnProperty.call(this.initData, 'heroes')) {
       await this.getData()
     }
   },
