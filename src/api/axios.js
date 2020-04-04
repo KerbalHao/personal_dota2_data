@@ -14,7 +14,6 @@ class AxiosRequest{
 
     instance.interceptors.response.use( res => {
       res = res.data
-      console.log(res)
       if (res['token']) {
         localStorage.setItem('token',res.token)
       }

@@ -59,11 +59,8 @@ export default {
           ? (this.selectedLabelSlots = this.$route.name)
           : null;
 
-        // 设置顶部名称
-
       // 设置动画效果
         this.transitionName = to.name !== 'Home' ? 'front' : 'back'
-        
       },
       immediate: true
     }
