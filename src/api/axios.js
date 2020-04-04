@@ -2,7 +2,7 @@ import axios from 'axios'
 
 class AxiosRequest{
   constructor() {
-    this.baseURL = process.NODE_ENV === 'production' ? '/':'http://127.0.0.1:8888',
+    this.baseURL = process.NODE_ENV === 'production' ? '/':'http://127.0.0.1:8888/',
     this.timeout = 2000
   }
 
@@ -14,10 +14,10 @@ class AxiosRequest{
 
     instance.interceptors.response.use( res => {
       res = res.data
-      if ('token' in res) {
+      console.log(res)
+      if (res['token']) {
         localStorage.setItem('token',res.token)
       }
-      console.log(1)
       return res
     }, err => Promise.reject(err))
   }
@@ -27,7 +27,8 @@ class AxiosRequest{
     let config = {
       ...options,
       baseURL: this.baseURL,
-      timeout: this.timeout
+      timeout: this.timeout,
+      headers: {'Content-Type': 'application/json'}
     }
     this.setInterceptor(instance, options.url)
     return instance(config)

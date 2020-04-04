@@ -28,7 +28,7 @@
             <cube-scroll ref="scroll" :data="item.MaterialOf">
               <div class="contentOfMaterialOf">
                 <div v-for='item in item.MaterialOf' :key='item.numId' class='listM'>
-                  <img :src="'http://i1.17173cdn.com/xz7c5b/YWxqaGBf/images/data/'+item.icon" alt=""><br>
+                  <img :src="item.icon" alt=""><br>
                   <div class="info">
                     <span>{{item.name}}<br>${{item.RealCost}}</span>
                   </div>
@@ -52,7 +52,7 @@
           </div>
         </div>
       </div>
-      <cube-button :primary='true' v-show='item.num === 0' @click='addToCart(item)'>加入购物车</cube-button>
+      <cube-button :primary='true' v-show='item.num === 0' @click="addToCart(item,'plus')">加入购物车</cube-button>
       <div class="cart-control" v-show='item.num > 0' >
         <cart-control :item='item' ></cart-control>
       </div>
@@ -62,7 +62,9 @@
 </template>
 <script type="text/ecmascript-6">
 import cartControl from '../Sub/cartControl'
-import {mapMutations} from 'vuex'
+import {validate} from '@/api'
+import {showLogin} from '@/components/utils'
+import {mapActions} from 'vuex'
 
 export default {
   data() {
@@ -74,7 +76,7 @@ export default {
     cartControl
   },
   methods: {
-    ...mapMutations('items', ['handleCartControl']),
+    ...mapActions(['handleCartControl']),
 
     show(item) {
       /*
@@ -84,8 +86,19 @@ export default {
       this.$refs.popup.show();
     },
 
-    addToCart(item) {
-      this.handleCartControl({id: item._id, num: 1,category: item.Category})
+    async addToCart(item, str) {
+      let res = await validate()
+      if (res.code == 0) {
+        if (str == 'minus') {
+         await this.handleCartControl({numId: item.numId, num: -1,category: item.Category})
+        } else if (str == 'plus') {
+          await this.handleCartControl({numId: item.numId, num: 1,category: item.Category})
+          // 将事件的主题传递给父组件
+          this.$emit('add', event.target)
+        }
+      } else {
+        showLogin.call(this)
+      }
     }
   }
 };

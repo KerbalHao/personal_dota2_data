@@ -1,10 +1,10 @@
 <template>
   <cube-scroll ref="scroll2" class="scroll-list-inner-wrap" nest-mode="free">
     <ul class="cube-scroll-list">
-      <li class="cube-scroll-item" v-for="item in heroBase" :key="item.id">
+      <li class="cube-scroll-item" v-for="item in heroes" :key="item.id">
         <router-link :to='`home/${item.id}`'>
-          <img :src="item.thumbImg" :alt="item.name" />
-          <span>{{item.name}}</span>
+          <img :src="item.hoverImgSrc" :alt="item.name" />
+          <span>{{item.name}} </span><br><i class='cubeic-like' v-show='item.like'> </i>
         </router-link>
       </li>
     </ul>
@@ -13,7 +13,8 @@
 
 <script>
 export default {
-  props: ['heroBase'],
+  props: ['heroes'],
+  
 };
 </script>
 
@@ -30,7 +31,7 @@ export default {
       width 4rem
       padding-left 0
       line-height 1rem
-      margin-bottom 3.5rem
+      margin-bottom 1.5rem
       a
         img
           width 100%

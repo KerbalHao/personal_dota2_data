@@ -1,17 +1,20 @@
 <template>
   <div class="detail">
+    <headers :text='`英雄：${data.name}`'></headers>
         <cube-loading :size="40" v-show='!this.data'></cube-loading>
 
     <cube-scroll ref="scroll2" class="scroll-list-inner-wrap" nest-mode="free">
       <div class="hero-bg">
         <img :src="data.heroLinkImgSrc" :alt="data.name" />
         <div>
-          <h2>背景故事<cube-button
-              v-if="show"
+          <h2>背景故事
+            <cube-button
               @click="toggle"
               :inline="true"
-            >{{description.length > 1 ? '折叠':'展开'}}</cube-button></h2>
-            <div>
+            >{{description.length > 1 ? '折叠':'展开'}}
+            </cube-button>
+          </h2>
+          <div>
             <p v-for="(paragraph,index) in description" :key="index">{{paragraph}}</p>
           </div>
         </div>
@@ -28,53 +31,48 @@
         <h2>英雄技能</h2>
         <ul>
           <li class="ability" v-for="item in data.Abilities" :key="item.id">
-            <img :src="`http://i1.17173cdn.com/xz7c5b/YWxqaGBf/images/data/${item.icon}`" alt />
+            <img :src="item.icon" alt />
             <span>{{item.name}}</span>
           </li>
         </ul>
       </div>
     </cube-scroll>
     <cube-button class='like' @click='likeHandler' :inline='true'>
-      <i class="cubeic-like" :style="{'color': data.like ? 'pink' : null}"></i>收藏
+      <i class="cubeic-like" :style="{'color': data.like ? 'orange' : null}"></i>{{data.like ? "已收藏" : "点击收藏"}}
     </cube-button>
   </div>
 </template>
 
 <script>
-// import Header from '@/components/header
-// import {showLogin} from '@/components/utils'
-import { mapActions, mapState,mapMutations } from "vuex";
-import { getDetail, validate} from "@/api";
+import {showLogin} from '@/components/utils'
+import Headers from "@/components/headers.vue";
+import {  mapState,mapActions } from "vuex";
+import {  validate } from "@/api";
 export default {
   data() {
     return {
       description: [],
       data: {},
-      show: false
+      show: false,
+      id: ''
     };
   },
-  async mounted() {
-    let [data] = await getDetail(this.$route.params.id);
-
-    let description = data.heroLinkDescription;
-
+  mounted() {
+    let data  = this.initData.heroes.filter(item => item.id === parseFloat(this.$route.params.id))[0]
+    this.id = this.$route.params.id
     this.data = data;
-
-    this.seperateP(description);
-
-    this.setHeaderName("英雄：" + data.name);
+    this.description = data.heroLinkDescription.length > 1? [data.heroLinkDescription[0] + '。。。'] : data.heroLinkDescription
   },
   computed: {
-    ...mapState(['user'])
+    ...mapState(['initData']),
   },
   methods: {
-    ...mapActions(["setHeaderName"]),
-    ...mapMutations(['setUserData']),
+    ...mapActions(['likeHeroHandler']),
 
     // 完成显示更多的内容
     toggle() {
       let bg = this.data.heroLinkDescription;
-      if (this.description.length == 1 && this.show) {
+      if (this.description.length == 1) {
         this.description = bg;
       } else if (this.description.length > 1) {
         this.description = [bg[0] + "。。"];
@@ -86,49 +84,21 @@ export default {
       });
     },
 
-    // 将描述根据句号分段
-    seperateP(longSentence) {
-      // 使用 reg.exec 完成对 句号 的匹配和索引的查找
-      let reg = new RegExp("。", "g");
-      let matched = reg.exec(longSentence);
-      let indexArray = [0];
-
-      while (matched !== null) {
-        indexArray.push(matched.index + 1);
-        matched = reg.exec(longSentence);
-      }
-
-      let i = 0;
-      while (i < indexArray.length - 1) {
-        this.description.push(
-          longSentence.slice(indexArray[i], indexArray[i + 1])
-        );
-        i++;
-      }
-
-      // 将修改的段落保存到 data 中
-      this.data.heroLinkDescription = this.description;
-
-      // 控制显示隐藏长文字
-      if (this.description.length > 1) {
-        this.show = true;
-        this.description = [this.description[0] + "。。。"];
-      }
-    },
 
     // 处理点击收藏按钮后的事件
-    // 1 若已登录，则将该英雄数据存储起来，并将该信息发送到后台
+    // 1 若已登录，将该信息发送到后台
     // 若未登录，则要求先登录
-    likeHandler() {
-      validate()
-
-      // if (this.user.userName) {
-      //   this.data.like = true
-      //   this.setUserData({type: 'like',content: this.data})
-      // } else {
-      //   showLogin.call(this)
-      // }
+    async likeHandler() {
+      let res = await validate()
+      if (res.code == 0) {
+        await this.likeHeroHandler({id:this.data.id,userName:this.initData.userName})
+      } else {
+        showLogin.call(this)
+      }
     }
+  },
+  components: {
+    Headers
   }
 };
 </script>

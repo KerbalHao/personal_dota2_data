@@ -27,5 +27,34 @@ function showLogin() {
     }
   }).show()
 }
+function deepClone(data) {
+  return JSON.parse(JSON.stringify(data))
+}
+function stringify(data) {
+  return JSON.stringify(data)
+}
 
-export {showLogin}
+function parse(data) {
+  return JSON.parse(data)
+}
+function arrayDuplicate(data = []) {
+  // 数组去重
+
+  let temp = {};
+
+  for (let i = 0; i < data.length; i++) {
+    let cur = data[i].category;
+    if (temp[cur] === cur || !cur) {
+      // 计算每个category 购物车中的物品数量
+      data[i].num += data[data.length - 1].num
+      data[i] = data[data.length - 1];
+      data.length--;
+      i--;
+      continue;
+    }
+    temp[cur] = cur;
+  }
+  temp = null;
+  return data;
+}
+export {showLogin, deepClone,stringify,parse,arrayDuplicate}

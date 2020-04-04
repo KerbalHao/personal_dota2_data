@@ -1,30 +1,38 @@
 <template>
   <div class="cartControl">
     <transition name='move'>
-    <i v-show="item.num > 0" class="cubeic-remove"  @click.stop="removeCart(item)"></i>
+    <i v-show="item.num > 0" class="cubeic-remove"  @click.stop="toCart(item,'minus')"></i>
     </transition>
     <transition name='fade'>
     <span v-show="item.num > 0">{{item.num > 0 ? item.num : ''}}</span>
     </transition>
-    <i class="cubeic-add" @click.stop="addCart(item,$event)"></i>
+    <i class="cubeic-add" @click.stop="toCart(item,'plus',$event)"></i>
   </div>
 </template>
 
 <script>
-import {mapMutations} from 'vuex'
+import {mapActions} from 'vuex'
+import {showLogin} from '@/components/utils'
+import {validate} from '@/api/index'
 export default {
   props: ['item'],
   methods: {
-    ...mapMutations('items', ['handleCartControl']),
+    ...mapActions( ['handleCartControl']),
     // 子组件计数后，将数量传递到父组件，由父组件进行重新渲染
-    addCart(item,event) {
-      this.handleCartControl({id: item._id, num: 1,category: item.Category})
-      // 将事件的主题传递给父组件
-      this.$emit('add', event.target)
+    async toCart(item,str, event) {
+      let res = await validate()
+      if (res.code == 0) {
+        if (str == 'minus') {
+         await this.handleCartControl({numId: item.numId, num: -1,category: item.Category})
+        } else if (str == 'plus') {
+          await this.handleCartControl({numId: item.numId, num: 1,category: item.Category})
+          // 将事件的主题传递给父组件
+          this.$emit('add', event.target)
+        }
+      } else {
+        showLogin.call(this)
+      }
     },
-    removeCart(item) {
-      this.handleCartControl({id: item._id, num: -1,category: item.Category})
-    }
   },
 }
 </script>

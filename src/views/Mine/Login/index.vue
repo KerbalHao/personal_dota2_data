@@ -1,5 +1,7 @@
 <template>
+
 <div class="login">
+  <headers text='用户登录'></headers>
   <div class="header">
     <img src='@/assets/user.jpg'>
   </div>
@@ -19,6 +21,7 @@
 
 <script>
 import {mapActions, mapState} from 'vuex'
+import headers from '@/components/headers'
 export default {
   data() {
     return {
@@ -58,21 +61,22 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user'])
+    ...mapState(['userData'])
   },
   methods: {
-    ...mapActions(['setUser']),
+    ...mapActions(['setUserData','setUser']),
     // beforeRouteEnter (to, from, next) {
     //   console.log(from, to)
     //   next()
     // },
-     submitHandler() {
+     async submitHandler() {
       // console.log(model)
-      this.setUser(this.model)
+      await this.setUser(this.model)
       this.$nextTick(() => {
-        if (this.user.token) {
+        if (this.userData.userName !== undefined && this.userData.userName !=='dota2' ) {
+          console.log(1)
           this.$createToast({
-            txt: this.user.userName + '登陆成功',
+            txt: this.userData.userName + '登陆成功',
             time: 500,
             type: 'correct',
             onTimeout: () => {
@@ -99,6 +103,9 @@ export default {
       console.log('validity', result)
     },
   },
+  components: {
+    headers
+  }
 }
 </script>
 

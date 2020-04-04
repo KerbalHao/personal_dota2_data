@@ -4,7 +4,7 @@
       <ul class="items-list">
         <li class="item" v-for="(item,index) in items" :key="index"  @click="showDetail(item)">
           <div class="item-info">
-            <img :src="`http://i1.17173cdn.com/xz7c5b/YWxqaGBf/images/data/` + item.icon" />
+            <img :src="item.icon" />
             <div class="info">
               <div class="name">{{item.name}}</div>
               <div class="price">$ {{item.RealCost}}</div>

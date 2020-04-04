@@ -1,48 +1,158 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import home from './modules/home'
-import items from './modules/items'
-import {fetchUser} from '@/api'
-
+import { fetchUser, fetchData, editData, postItem,postBought, setLogout } from '@/api'
+import { parse, stringify, arrayDuplicate } from '@/components/utils'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    headerName: '英雄',
-    user: {},
-    userData: {}
+    initData: parse(localStorage.getItem('userData'))||parse(localStorage.getItem('initData')) || {},
+    userData: parse(localStorage.getItem('userData'))||{},
+    category: [],
+    total: 0
   },
   mutations: {
-    setHeaderName(state, payload){
-      state.headerName = payload
-    },
-    setUser(state, payload) {
-      state.user = payload
+    setInitData(state, payload) {
+      localStorage.setItem('initData', stringify(payload))
+      state.initData = payload
     },
     setUserData(state, payload) {
-      // 将 like, bought 和 cart 作为 userData 的属性储存
-      if (payload.type in state.userData) {
-        state.userData[payload.type] = state.userData[payload.type].concat(payload.content)
-        state.userData[payload.type] = state.userData[payload.type].filter(item => {
-          return item._id !== payload.content._id
+      let { personalData } = payload
+      state.userData = personalData
+      localStorage.setItem(`userData`, stringify(personalData))
+      // 将 initData 赋值为 用户的个人数据
+      state.initData = state.userData
+    },
+    likeHeroHandler(state, payload) {
+      state.initData.heroes.forEach(item => {
+        if (item.id === payload) {
+          item.like = !item.like
+        }
+      })
+      localStorage.setItem(`userData`, stringify(state.initData))
+    },
+    setCatagory(state) {
+      let data = state.initData.items
+      data = data.reduce((pre, cur) => {
+        let item = {category: cur.Category, num: cur.num}
+        pre.push(item);
+        return pre;
+      }, []);
+      // drawer 组件要求的是二维数组
+      // 此处，通过 initData 计算获得用户的每个 category 中的物品数量
+      state.category = [[{category:"全部", num: state.total}].concat(arrayDuplicate(data))]
+    },
+
+    handleCartControl(state, payload) {
+      // 处理 清空购物车的情况
+      if (payload == 'clear') {
+        state.userData.items = state.initData.items.map(item => {
+          if (item.num !== 0) {
+            item.num = 0
+          }
         })
+        // state.category[0].forEach(item => {
+        //   if (item.num !== 0) {
+        //     item.num = 0
+        //   }
+        // })
       } else {
-        state.userData[payload.type] = [payload.content]
+        // 处理购物组件数字
+        state.userData.items = state.initData.items.map(item => {
+          if (item.numId == payload.numId) {
+            item.num = item.num + payload.num
+          }
+          return item
+        })
+  
+        // 处理 drawer 组件数字
+        // state.category[0].forEach(item => {
+        //   if (item.category === payload.category) {
+        //     if (item.category === '全部') {
+        //       return
+        //     }
+        //     item.num += payload.num
+        //     state.total += payload.num
+        //   }
+        // })
+        // state.category[0][0].num = state.total
       }
+
+      localStorage.setItem(`userData`, stringify(state.userData))
+      state.initData = state.userData
+    },
+    handleBuyItem(state, payload) {
+      console.log(payload)
+      state.userData.items = state.initData.items.map(item => {
+        for(let i = 0; i< payload.length;i++) {
+          if (item.numId == payload[i].numId){
+            item.num = 0
+            item.bought = true
+            item.bought_num = payload.bought_num
+            console.log(item)
+          }
+        }
+        return item
+      })
+      localStorage.setItem(`userData`, stringify(state.userData))
+      state.initData = state.userData
+    },
+    handleLogout(state) {
+      localStorage.removeItem('userData')
+      localStorage.removeItem('token')
+      state.userData = {}
+      state.initData = parse(localStorage.getItem('initData'))
     }
   },
   actions: {
-    setHeaderName({commit}, payload) {
-      commit('setHeaderName', payload)
+    // 获得初始数据
+    async getData({ commit }) {
+      let data = await fetchData()
+      commit('setInitData', data)
     },
-    async setUser({commit}, payload) {
+    // 登录
+    async setUser({ commit }, payload) {
       let res = await fetchUser(payload)
-      commit('setUser', res)
+      if (res.code == 1) return
+      commit('setUserData', res)
+    },
+
+
+    // 收藏英雄
+    async likeHeroHandler({ commit }, payload) {
+      console.log(1)
+      await editData(payload)
+      commit('likeHeroHandler', payload.id)
+    },
+
+    //
+    async handleCartControl({ commit }, payload) {
+      console.log(payload)
+      if (payload === 'clear') {
+        await postItem('clear')
+      } else {
+        if (payload.numId) {
+          await postItem({ numId: payload.numId, num: payload.num })
+        }
+      }
+      commit('handleCartControl', payload)
+    },
+
+    async handleBuy({commit}, payload) {
+      let data = payload.map(item => {
+        return {
+          numId: item.numId,
+          bought_num: item.num,
+        }
+      })
+      await postBought(data)
+      commit('handleBuyItem', data)
+    },
+
+    async handleLogout({commit}) {
+      await setLogout()
+      commit('handleLogout')
     }
   },
-  modules: {
-    home,
-    items
-  }
 })

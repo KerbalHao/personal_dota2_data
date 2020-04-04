@@ -1,13 +1,18 @@
 <template>
   <div id="mine">
-    <router-view v-if='!showLogin'></router-view>
-    <div class="mine" v-if='showLogin'>
+    <headers text="用户中心"></headers>
+    <router-view v-if="!showLogin"></router-view>
+    <div class="mine" v-if="showLogin">
       <div class="header">
         <img src="@/assets/user.jpg" />
-        <router-link to="mine/login">
+        <router-link to="mine/login" v-if="!showName">
           <cube-button :inline="true" :primary="true">登录</cube-button>
         </router-link>
-        <!-- <span>{{user.userName}}</span> -->
+        <div  v-else>
+          <div class="user-name">{{userName}}</div>
+          <cube-button :inline="true" :primary="true" @click='logout'>注销</cube-button>
+
+        </div>
       </div>
 
       <ul class="list">
@@ -18,7 +23,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import Headers from "@/components/headers";
+import {validate} from '@/api'
+import { mapState, mapActions } from "vuex";
 let list = [
   {
     text: "我的收藏",
@@ -33,11 +40,59 @@ export default {
   data() {
     return {
       list,
-      showLogin: true
+      showLogin: true,
+      showName: false,
+      userName: ''
     };
   },
+  components: {
+    Headers
+  },
   computed: {
-    ...mapState(['user'])
+    ...mapState(["userData"])
+  },
+  async mounted() {
+    let res = await validate()
+    console.log(res)
+    if (res.code == 0) {
+      this.showName = true
+      console.log(this.userData)
+      this.userName = this.userData.userName
+
+    } else {
+      this.showName = false
+    }
+  },
+  methods: {
+    ...mapActions(['handleLogout']),
+    async logout() {
+       this.$createDialog({
+        type: 'confirm',
+        icon: 'cubeic-alert',
+        content: `是否确认登出账号？`,
+        confirmBtn: {
+          text: '确定',
+          active: true,
+          disabled: false,
+          href: 'javascript:;'
+        },
+        cancelBtn: {
+          text: '取消',
+          active: false,
+          disabled: false,
+          href: 'javascript:;'
+        },
+        onConfirm: async () => {
+          await this.handleLogout()
+          this.showName = false
+          this.$createToast({
+            type: 'warn',
+            time: 1000,
+            txt: '您已成功登出'
+          }).show()
+        },
+      }).show()
+    }
   },
 };
 </script>
@@ -69,6 +124,15 @@ export default {
       vertical-align: bottom;
       margin-bottom: 0.5rem;
     }
+
+    .user-name {
+      color: black
+      position: absolute
+      left 50%
+      transform translate3d(-50%, 130%,0)
+      height  1rem
+
+    }
   }
 
   .list {
@@ -83,4 +147,6 @@ export default {
     }
   }
 }
+
+
 </style>

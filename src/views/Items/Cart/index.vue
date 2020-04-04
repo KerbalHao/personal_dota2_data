@@ -27,7 +27,7 @@
           <div class="content">
             <div class="header">
               <span class="title">购物车</span>
-              <cube-button :outline="false" :inline="true" icon="cubeic-delete" @click="clear">清空</cube-button>
+              <cube-button :outline="false" :inline="true" icon="cubeic-delete" v-show='!empty' @click="clear">清空</cube-button>
             </div>
             <div class="cartList">
               <cube-scroll ref="scroll" :data="data" v-show="!empty">
@@ -60,7 +60,7 @@
 
 <script>
 import bubble from "@/components/Bubble";
-import { mapMutations } from "vuex";
+import { mapActions } from "vuex";
 import cartControl from "../Sub/cartControl";
 
 const BALL_LEN = 10
@@ -103,12 +103,30 @@ export default {
     }
   },
   methods: {
-    ...mapMutations("items", ["handleCartControl"]),
+    ...mapActions(["handleCartControl",'handleBuy']),
     
     handleClick() {
-      if (this.empty) {
-        this.hide();
-      }
+      this.$createDialog({
+        type: 'confirm',
+        icon: 'cubeic-alert',
+        content: `总计${this.total}元，是否确定购买？`,
+        confirmBtn: {
+          text: '确定',
+          active: true,
+          disabled: false,
+          href: 'javascript:;'
+        },
+        cancelBtn: {
+          text: '取消',
+          active: false,
+          disabled: false,
+          href: 'javascript:;'
+        },
+        onConfirm: async () => {
+          await this.handleBuy(this.data)
+          this.hide()
+        },
+      }).show()
     },
     show() {
       this.$refs.popup.show();
@@ -117,9 +135,9 @@ export default {
       this.$refs.popup.hide();
     },
 
-    clear() {
+    async clear() {
       this.hide();
-      this.handleCartControl("clear");
+      await this.handleCartControl("clear");
     },
 
     drop(el) {

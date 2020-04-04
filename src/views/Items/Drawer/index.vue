@@ -1,7 +1,7 @@
 <template>
   <div class="drawer">
     <i class="cubeic-location" @click="showDrawer">
-    <bubble :data='total' v-show='total > 0'></bubble>
+    <!-- <bubble :data='total' v-show='total > 0'></bubble> -->
     </i>
     <cube-drawer ref="drawer" title="请选择" :data="filters" @select="selectHandler" >
       <cube-drawer-panel
@@ -11,7 +11,7 @@
         :data="panel"
       >
         <cube-drawer-item v-for="(item, i) in panel" :item="item" :key="i" :index="i">{{item.category}}
-        <bubble :data='item.num' v-show='item.num > 0'></bubble>
+        <!-- <bubble :data='item.num' v-show='item.num > 0'></bubble> -->
         </cube-drawer-item>
       </cube-drawer-panel>
     </cube-drawer>
@@ -19,29 +19,18 @@
 </template>
 
 <script>
-import bubble from "@/components/Bubble"
-import { mapState, mapMutations} from 'vuex'
+// import bubble from "@/components/Bubble"
+// import {  mapState} from 'vuex'
 
 export default {
   components: {
-    bubble
+    // bubble
   },
   computed: {
-    ...mapState('items',['items']),
-    total() {
-      let total = 0
-      if (!this.filters[0]) return total
-      this.filters[0].slice(1).forEach(item => {
-        total += item.num
-      })
-      this.handleCartControl({id:'',num: total,category:'全部'})
-      return total
-    }
+    // ...mapState(['total'])
   },
   props: ["filters"],
-
   methods: {
-    ...mapMutations('items',['handleCartControl']),
     showDrawer() {
       this.$refs.drawer.show();
     },

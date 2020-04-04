@@ -1,40 +1,63 @@
 import axios from './axios'
 
- const homePage = () => {
+ const fetchData = () => {
   return axios.request({
-    url: '/api/hero'
-  })
-}
-
-const getDetail = (id) => {
-  return axios.request({
-    url: '/api/hero/' + id
-  })
-}
-
-const getItems = () => {
-  return axios.request({
-    url: '/api/items'
+    url: '/'
   })
 }
 
 const fetchUser= (user) =>{
   return axios.request({
     method: 'post',
-    url: '/mine/login', 
+    url: '/login', 
     data: user
+  })
+}
+
+const editData = (payload) => {
+  return axios.request({
+    method: 'post',
+    url: `/like/${payload.id}`,
+    data:payload
   })
 }
 
 const validate = () => {
   return axios.request({
-    url: '/mine/validate'
+    url: '/checktoken',
   })
 }
+
+//data = [{numId, num}, ....]
+const postItem = (payload) => {
+  return axios.request({
+    url: '/item/addcart',
+    method: 'post',
+    data:payload
+  })
+
+}
+
+const postBought = (payload) => {
+  return axios.request({
+    url: '/item/buy',
+    method: 'post',
+    data: payload
+  })
+}
+
+const setLogout= () => {
+  return axios.request({
+    url: '/user/exit',
+  })
+}
+
 export {
-  homePage,
-  getDetail,
-  getItems,
+  fetchData,
   fetchUser,
-  validate
+  editData,
+  validate,
+  postItem,
+  postBought,
+  setLogout
 }

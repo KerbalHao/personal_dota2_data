@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <home-header :text='this.headerName'></home-header>
     <transition  :name='transitionName' mode='out-in'>
       <router-view></router-view>
     </transition>
@@ -17,10 +16,7 @@
   </div>
 </template>
 <script>
-import HomeHeader from "@/components/home-header.vue";
-import {mapState,mapMutations} from 'vuex'
-
-
+import {mapActions,mapState} from 'vuex'
 export default {
   data() {
     return {
@@ -43,13 +39,14 @@ export default {
       header: ''
     };
   },
+  async mounted() {
+    if (!this.initData.heroes) {
+      await this.getData()
+    }
+  },
   computed: {
-    ...mapState(['headerName'])
+    ...mapState(['initData'])
   },
-  components: {
-    "home-header": HomeHeader
-  },
-
   // 1. 路径随 tab 变化而变化， 2. tab 随路径变化而变化 3. 更新后，tab 和路径保持与更新前一致
   watch: {
     $route: {
@@ -63,8 +60,6 @@ export default {
           : null;
 
         // 设置顶部名称
-        let headerName = this.$route.name === 'Items' ?  '物品' : this.$route.name === 'Mine' ? '用户中心' : '英雄'
-        this.setHeaderName(headerName)
 
       // 设置动画效果
         this.transitionName = to.name !== 'Home' ? 'front' : 'back'
@@ -74,13 +69,10 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setHeaderName']),
+    ...mapActions(['getData']),
     clickHandler(label) {
       this.selectedLabelSlots = label;
       this.$router.push(`/${label.toLowerCase()}`);
-      let headerName = label === 'Items' ?  '物品' : label === 'Photo' ? '壁纸' : label === 'Mine' ? '用户中心' : '英雄'
-      this.setHeaderName(headerName)
-
     }
   }
 };
