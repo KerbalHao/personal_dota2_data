@@ -67,16 +67,9 @@ router.post('/like/:id', (req, res, next) => {
     message: personalData.heroes[id].like ? '收藏成功' : '已取消收藏'
   })
 })
-
 /* Get item page */
 // 前端 put 时，将整个 操作后的 item 发送给后台，用于操作个人数据
 router.post('/item/addcart', (req, res, next) => {
-  if (req.body === 'clear') {
-    personalData.items = personalData.items.map(item => {
-      item.num = 0
-      return item
-    })
-  } else {
     let {numId, num} = req.body
     personalData.items = personalData.items.map(item => {
       if (item.numId == numId) {
@@ -84,13 +77,26 @@ router.post('/item/addcart', (req, res, next) => {
       }
       return item
     })
-  }
   savePersonalData(personalData.userName)
   res.json({
     code: 0,
     message: '数据已更改'
   })
 })
+
+router.get('/item/clear', (req,res) => {
+  console.log(1)
+  personalData.items = personalData.items.map(item => {
+    item.num = 0
+    return item
+  })
+  savePersonalData(personalData.userName)
+  res.json({
+    code: 0,
+    message: '已清除'
+  })
+})
+
 router.post('/item/buy', (req, res) => {
   let data = req.body
   console.log(data)

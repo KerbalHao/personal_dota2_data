@@ -4,6 +4,7 @@
     <drawer :filters="category" @confirm="confirm"></drawer>
     <h2>已购买物品</h2>
     <scroll-nav :items='items' :bought='true'></scroll-nav>
+    <footer>总计： ${{total}}</footer>
   </div>
 </template>
 
@@ -16,11 +17,18 @@ import {mapState} from 'vuex'
 export default {
   data() {
     return {
-      items: []
+      items: [],
+      total: 0
     }
   },
   mounted() {
+    let total = 0
     this.items = this.userData.items.filter(item => item.bought)
+    this.items.forEach(item => {
+      total += item.bought_num * item.RealCost
+    })
+    this.total = total
+
   },
   computed: {
     ...mapState(['userData','category'])
@@ -58,4 +66,12 @@ h2
   color orange
   z-index 100
   margin .5rem
+footer
+  position fixed
+  bottom 3rem
+  left 50%
+  transform translateX(-50%)
+  color orange
+  font-size 1.5rem
+  // width 100%
 </style>

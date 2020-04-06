@@ -33,10 +33,15 @@ const postItem = (payload) => {
   return axios.request({
     url: '/item/addcart',
     method: 'post',
-    data:payload
+    data: payload
   })
-
 }
+
+const clearItem = (() => {
+  return axios.request({
+    url: '/item/clear',
+  })
+})
 
 const postBought = (payload) => {
   return axios.request({
@@ -53,6 +58,7 @@ const setLogout= () => {
 }
 
 export {
+  clearItem,
   fetchData,
   fetchUser,
   editData,

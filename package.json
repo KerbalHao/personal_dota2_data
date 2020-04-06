@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
+    "start": "node ./server/bin/www",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -12,20 +13,24 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "cube-ui": "~1.12.15",
-    "jsonwebtoken": "^8.5.1",
     "vue": "^2.6.11",
     "vue-router": "^3.1.5",
-    "vuex": "^3.1.2"
+    "vuex": "^3.1.2",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "~1.9.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.2.0",
     "@vue/cli-plugin-eslint": "^4.2.0",
     "@vue/cli-service": "^4.2.0",
     "babel-eslint": "^10.0.3",
-    "body-parser": "^1.19.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.1.2",
-    "express": "^4.17.1",
     "postcss-px2rem": "^0.3.0",
     "stylus": "^0.54.7",
     "stylus-loader": "^3.0.2",

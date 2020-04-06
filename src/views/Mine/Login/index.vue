@@ -5,7 +5,7 @@
   <div class="header">
     <img src='@/assets/user.jpg'>
   </div>
-  <cube-form  :model="model" @validate="validateHandler" @submit.prevent="submitHandler" >
+  <cube-form  :model="model" @submit.prevent="submitHandler" >
       <cube-form-group>
         <cube-form-item :field="fields[0]"></cube-form-item>
         <cube-form-item :field="fields[1]"></cube-form-item>
@@ -14,7 +14,7 @@
         <cube-button type="submit" :primary='true'>登录</cube-button>
       </cube-form-group>
     </cube-form>
-    <cube-button type="submit" @click="showRegister">注册</cube-button>
+    <!-- <cube-button type="submit" @click="showRegister">注册</cube-button> -->
 
 </div>
 </template>
@@ -90,13 +90,6 @@ export default {
     }, 
     showRegister() {
       
-    },
-    validateHandler(result) {
-      // this.validity = result.validity
-      // this.valid = result.valid
-      let a = true
-      if (a) return
-      console.log('validity', result)
     },
   },
   components: {

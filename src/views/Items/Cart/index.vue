@@ -103,7 +103,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["handleCartControl",'handleBuy']),
+    ...mapActions(["handleClear",'handleBuy']),
     
     handleClick() {
       this.$createDialog({
@@ -137,7 +137,7 @@ export default {
 
     async clear() {
       this.hide();
-      await this.handleCartControl("clear");
+      await this.handleClear("clear");
     },
 
     drop(el) {

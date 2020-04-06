@@ -161,8 +161,10 @@ export default {
         padding: 0.5rem;
 
         li 
+          height 8rem
           display: flex;
           flex-direction: column;
+          width 3rem
         
 .like
   position absolute

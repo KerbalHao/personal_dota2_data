@@ -136,6 +136,7 @@ export default {
       left: 50%;
       transform: translate3d(-50%, 130%, 0);
       height: 1rem;
+      font-size 1rem
     }
   }
 
@@ -151,4 +152,5 @@ export default {
     }
   }
 }
+
 </style>

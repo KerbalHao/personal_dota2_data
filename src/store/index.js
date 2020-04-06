@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { fetchUser, fetchData, editData, postItem,postBought, setLogout } from '@/api'
+import { fetchUser, fetchData, editData, postItem,postBought, setLogout,clearItem } from '@/api'
 import { parse, stringify, arrayDuplicate } from '@/components/utils'
 
 Vue.use(Vuex)
@@ -51,6 +51,7 @@ export default new Vuex.Store({
           if (item.num !== 0) {
             item.num = 0
           }
+          return item
         })
         // state.category[0].forEach(item => {
         //   if (item.num !== 0) {
@@ -128,15 +129,17 @@ export default new Vuex.Store({
 
     //
     async handleCartControl({ commit }, payload) {
-      console.log(payload)
-      if (payload === 'clear') {
-        await postItem('clear')
-      } else {
+ 
         if (payload.numId) {
           await postItem({ numId: payload.numId, num: payload.num })
         }
-      }
       commit('handleCartControl', payload)
+    },
+
+    async handleClear({commit},payload) {
+      await clearItem()
+      commit('handleCartControl', payload)
+
     },
 
     async handleBuy({commit}, payload) {

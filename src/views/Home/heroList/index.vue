@@ -24,14 +24,16 @@ export default {
     margin-top .5rem
     display flex
     flex-wrap wrap
-    justify-content space-around
-    li
+    justify-content space-between
+    li.cube-scroll-item
       font-size .75rem
-      width 4rem
-      padding-left 0
+      width 6rem
+      margin-right .5
+      padding 0
       line-height 1rem
-      margin-bottom 1.5rem
+      margin-bottom 2.5rem
       a
         img
           width 100%
+
 </style>

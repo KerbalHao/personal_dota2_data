@@ -84,7 +84,11 @@ export default {
       ** 接收父元素通过函数传递过来的 item，并赋值给 this.item 用于渲染
       */
       this.item = item;
-      this.bought = true
+      if (this.$route.path.includes('mine')) {
+        this.bought = true
+      } else {
+        this.bought = false
+      }
       this.$refs.popup.show();
     },
 
