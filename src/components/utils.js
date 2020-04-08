@@ -57,4 +57,12 @@ function arrayDuplicate(data = []) {
   temp = null;
   return data;
 }
-export {showLogin, deepClone,stringify,parse,arrayDuplicate}
+
+function errCB() {
+    this.$createDialog({
+      type: 'alert',
+      icon: 'cubeic-alert',
+      content: '访问服务器超时 \n 请检查网络后刷新重试！'
+    }).show()
+}
+export {showLogin, deepClone,stringify,parse,arrayDuplicate,errCB}

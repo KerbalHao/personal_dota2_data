@@ -1,6 +1,3 @@
 [
-  {
-    "userName":"admin",
-    "passWord":"admin"
-  }
+  {"userName": "admin","passWord":"admin"}
 ]

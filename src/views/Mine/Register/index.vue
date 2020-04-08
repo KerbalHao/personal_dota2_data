@@ -1,21 +1,16 @@
 <template>
 
-<div class="login">
-  <headers text='用户登录'></headers>
-  <div class="header">
-    <img src='@/assets/user.jpg'>
-  </div>
-  <cube-form  :model="model" @submit.prevent="submitHandler" >
+  <div class="login">
+    <headers text='用户注册'></headers>
+    <cube-form  :model="model" @submit.prevent="resister">
       <cube-form-group>
         <cube-form-item :field="fields[0]"></cube-form-item>
         <cube-form-item :field="fields[1]"></cube-form-item>
       </cube-form-group>  
       <cube-form-group>
-        <cube-button type="submit" :primary='true'>登录</cube-button>
-      </cube-form-group>
-    </cube-form>
-    <cube-button type="submit" @click="showRegister">注册</cube-button>
-
+    <cube-button type="submit">注册</cube-button>
+  </cube-form-group>
+      </cube-form>
 </div>
 </template>
 
@@ -60,37 +55,31 @@ export default {
           }
         }
       ],
-      from: '/home'
     }
   },
   computed: {
     ...mapState(['userData'])
   },
   methods: {
-    ...mapActions(['setUser']),
-     async submitHandler() {
-      await this.setUser(this.model,errCB.bind(this))
-      this.$nextTick(() => {
-        if (this.userData.userName !== undefined && this.userData.userName !=='dota2' ) {
-          this.$createToast({
-            txt: this.userData.userName + '登陆成功',
-            time: 500,
-            type: 'correct',
-            onTimeout: () => {
-              this.$router.go(-1)
-            }
-          }).show()
-        } else {
-          this.$createToast({
-            txt: '登陆失败，请检查用户名或密码是否正确',
-            time: 500,
-            type: 'error',
-          }).show()
-        }       
-      })
-    }, 
-    showRegister() {
-      this.$router.push('/mine/resister')
+    ...mapActions(['handleRegister']),
+    async resister() {
+      let code = await this.handleRegister(this.model, errCB.bind(this))
+      if (code == 1) {
+        this.$createToast({
+          txt: '注册失败，该账号已被注册',
+          time: 1000,
+          type: 'error',
+        }).show()
+      } else {
+        this.$createToast({
+          txt: '注册成功，即将自动登录',
+          time: 1000,
+          type: 'correct'
+        }).show()
+        setTimeout(() => {
+        this.$router.push('/mine')
+        }, 1300)
+      }
     },
   },
   components: {

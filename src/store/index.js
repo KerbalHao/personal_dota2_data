@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { fetchUser, fetchData, editData, postItem,postBought, setLogout,clearItem } from '@/api'
+import { fetchUser, fetchData, editData, postItem,postBought, setLogout,clearItem,postRegister } from '@/api'
 import { parse, stringify, arrayDuplicate } from '@/components/utils'
 
 Vue.use(Vuex)
@@ -108,54 +108,58 @@ export default new Vuex.Store({
   },
   actions: {
     // 获得初始数据
-    async getData({ commit }) {
-      let data = await fetchData()
+    async getData({ commit }, cb) {
+      let data = await fetchData(cb) || {}
       commit('setInitData', data)
     },
     // 登录
-    async setUser({ commit }, payload) {
-      let res = await fetchUser(payload)
+    async setUser({ commit }, payload,cb) {
+      let res = await fetchUser(payload,cb)
       if (res.code == 1) return
       commit('setUserData', res)
     },
 
 
     // 收藏英雄
-    async likeHeroHandler({ commit }, payload) {
-      console.log(1)
-      await editData(payload)
+    async likeHeroHandler({ commit }, payload,cb) {
+      await editData(payload,cb)
       commit('likeHeroHandler', payload.id)
     },
 
     //
-    async handleCartControl({ commit }, payload) {
+    async handleCartControl({ commit }, payload,cb) {
  
         if (payload.numId) {
-          await postItem({ numId: payload.numId, num: payload.num })
+          await postItem({ numId: payload.numId, num: payload.num },cb)
         }
       commit('handleCartControl', payload)
     },
 
-    async handleClear({commit},payload) {
-      await clearItem()
+    async handleClear({commit},payload,cb) {
+      await clearItem(cb)
       commit('handleCartControl', payload)
 
     },
 
-    async handleBuy({commit}, payload) {
+    async handleBuy({commit}, payload,cb) {
       let data = payload.map(item => {
         return {
           numId: item.numId,
           bought_num: item.num,
         }
       })
-      await postBought(data)
+      await postBought(data,cb)
       commit('handleBuyItem', data)
     },
 
-    async handleLogout({commit}) {
-      await setLogout()
+    async handleLogout({commit},cb) {
+      await setLogout(cb)
       commit('handleLogout')
+    },
+    async handleRegister({commit}, payload, cb) {
+      let res = await postRegister(payload, cb)
+      if (res.code == 1) return res.code
+      commit('setUserData', res)
     }
   },
 })

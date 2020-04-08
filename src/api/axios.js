@@ -6,22 +6,22 @@ class AxiosRequest{
     this.timeout = 2000
   }
 
-  setInterceptor(instance) {
+  setInterceptor(instance, cb) {
     instance.interceptors.request.use( config => {
       config.headers.authorization = localStorage.getItem('token') || ''
       return config
-    }, err => Promise.reject(err))
+    }, err => Promise.reject(err).then(()=>{},cb))
 
     instance.interceptors.response.use( res => {
-      res = res.data
-      if (res['token']) {
-        localStorage.setItem('token',res.token)
+      let data = res.data
+      if (data['token']) {
+        localStorage.setItem('token',data.token)
       }
-      return res
-    }, err => Promise.reject(err))
+      return data
+    }, err => Promise.reject(err).then(()=>{},cb))
   }
 
-  request(options) {
+  request(options, cb) {
     let instance = axios.create()
     let config = {
       ...options,
@@ -29,7 +29,7 @@ class AxiosRequest{
       timeout: this.timeout,
       headers: {'Content-Type': 'application/json'}
     }
-    this.setInterceptor(instance, options.url)
+    this.setInterceptor(instance, cb)
     return instance(config)
   }
 }

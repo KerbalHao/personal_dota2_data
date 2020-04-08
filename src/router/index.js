@@ -39,6 +39,11 @@ const routes = [
     component: () => import('@/views/Mine/Login'),
   },
   {
+    path: '/mine/register',
+    name: 'Register',
+    component: () => import('@/views/Mine/Register'),
+  },
+  {
     path:'/mine/favourite',
     name: 'Favourite',
     component: () => import('@/views/Mine/MyFavourite')

@@ -2,8 +2,11 @@
   <div class="home">
     <headers text="英雄"></headers>
     <Slide></Slide>
-    <cube-loading :size="40" v-show='initData.heroes!==undefined && initData.heroes.length == 0'></cube-loading>
-    <cube-button @click="showMutiPicker" v-show='initData.heroes!==undefined && initData.heroes.length !== 0'>筛选英雄</cube-button>
+    <cube-loading :size="40" v-show="initData.heroes!==undefined && initData.heroes.length == 0"></cube-loading>
+    <cube-button
+      @click="showMutiPicker"
+      v-show="initData.heroes!==undefined && initData.heroes.length !== 0"
+    >筛选英雄</cube-button>
     <List :heroes="passHero"></List>
   </div>
 </template>
@@ -12,12 +15,13 @@
 import Headers from "@/components/headers.vue";
 import Slide from "./slide";
 import List from "./heroList";
-import { mapState,mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
+// import { errCB } from '@/components/utils'
 
 export default {
   data() {
     return {
-      passHero: [],
+      passHero: []
     };
   },
 
@@ -27,15 +31,20 @@ export default {
     Headers
   },
   async mounted() {
-    if (!Object.prototype.hasOwnProperty.call(this.initData, 'heroes')) await this.getData()
-    this.passHero = this.initData.heroes
+    // 等待 APP.vue 中请求返回数据，在此组件中重复赋值，直到 passHero 得到值，停止计时器
+    let timer
+    if (this.passHero.length == 0) {
+      timer = setInterval(() => {
+        this.passHero = this.initData.heroes
+        if (this.passHero.length != 0) clearInterval(timer)
+      }, 300);
+    }
   },
-  
   computed: {
-    ...mapState(["initData"]),
+    ...mapState(["initData"])
   },
   methods: {
-    ...mapActions(['getData']),
+    ...mapActions(["getData"]),
     getFilters(props) {
       // 需要将 heroes 中每个英雄的的字符串 filters 转化成数组，累积获得 filters 的数组
       let filters = [],
@@ -91,7 +100,11 @@ export default {
        */
       let [AttributePrimary, attackType, Roles] = selectedVal;
       // 若都是 all 则直接返回 store 中的 heroes
-      if (AttributePrimary === "all" && attackType === "all" && Roles === "all") {
+      if (
+        AttributePrimary === "all" &&
+        attackType === "all" &&
+        Roles === "all"
+      ) {
         this.passHero = this.initData.heroes;
         return;
       }
@@ -99,7 +112,11 @@ export default {
       // 通过 chain 连续筛选合适的英雄
       this.passHero = this.initData.heroes
         .filter(item => {
-          if (item.AttributePrimary === AttributePrimary || AttributePrimary === "all") return true;
+          if (
+            item.AttributePrimary === AttributePrimary ||
+            AttributePrimary === "all"
+          )
+            return true;
         })
         .filter(item => {
           if (item.attackType === attackType || attackType === "all")
@@ -121,6 +138,8 @@ export default {
     height: 2.5rem;
   }
 }
-.cube-loading
-  margin auto
+
+.cube-loading {
+  margin: auto;
+}
 </style>

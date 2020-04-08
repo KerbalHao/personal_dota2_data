@@ -15,6 +15,8 @@ import Drawer from "./Drawer/";
 import cart from "./Cart/";
 import Headers from '@/components/headers'
 import { mapState, mapActions, mapMutations} from 'vuex'
+import { errCB } from '@/components/utils'
+
 
 export default {
   data() {
@@ -25,7 +27,7 @@ export default {
     };
   },
   async mounted() {
-    if (!Object.prototype.hasOwnProperty.call(this.initData, 'heroes')) await this.getData()
+    if (!Object.prototype.hasOwnProperty.call(this.initData, 'heroes')) await this.getData(errCB.bind(this))
     this.data = this.initData.items;
     // 初始化传递到 Drawer 组件的数据
     this.setCatagory();

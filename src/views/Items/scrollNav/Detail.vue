@@ -63,7 +63,7 @@
 <script type="text/ecmascript-6">
 import cartControl from '../Sub/cartControl'
 import {validate} from '@/api'
-import {showLogin} from '@/components/utils'
+import {showLogin,errCB} from '@/components/utils'
 import {mapActions} from 'vuex'
 
 export default {
@@ -93,12 +93,12 @@ export default {
     },
 
     async addToCart(item, str) {
-      let res = await validate()
+      let res = await validate(errCB.bind(this))
       if (res.code == 0) {
         if (str == 'minus') {
-         await this.handleCartControl({numId: item.numId, num: -1,category: item.Category})
+         await this.handleCartControl({numId: item.numId, num: -1,category: item.Category},errCB.bind(this))
         } else if (str == 'plus') {
-          await this.handleCartControl({numId: item.numId, num: 1,category: item.Category})
+          await this.handleCartControl({numId: item.numId, num: 1,category: item.Category},errCB.bind(this))
           // 将事件的主题传递给父组件
           this.$emit('add', event.target)
         }

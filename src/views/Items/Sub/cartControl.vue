@@ -12,20 +12,21 @@
 
 <script>
 import {mapActions} from 'vuex'
-import {showLogin} from '@/components/utils'
+import {showLogin,errCB} from '@/components/utils'
 import {validate} from '@/api/index'
+
 export default {
   props: ['item'],
   methods: {
     ...mapActions( ['handleCartControl']),
     // 子组件计数后，将数量传递到父组件，由父组件进行重新渲染
     async toCart(item,str, event) {
-      let res = await validate()
+      let res = await validate(errCB.bind(this))
       if (res.code == 0) {
         if (str == 'minus') {
-         await this.handleCartControl({numId: item.numId, num: -1,category: item.Category})
+         await this.handleCartControl({numId: item.numId, num: -1,category: item.Category},errCB.bind(this))
         } else if (str == 'plus') {
-          await this.handleCartControl({numId: item.numId, num: 1,category: item.Category})
+          await this.handleCartControl({numId: item.numId, num: 1,category: item.Category},errCB.bind(this))
           // 将事件的主题传递给父组件
           this.$emit('add', event.target)
         }

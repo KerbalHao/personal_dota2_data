@@ -5,9 +5,10 @@
     <div class="mine" v-if="showLogin">
       <div class="header">
         <img src="@/assets/user.jpg" />
-        <router-link to="mine/login" v-if="!showName">
-          <cube-button :inline="true" :primary="true">登录</cube-button>
-        </router-link>
+        <div v-if="!showName">
+          <cube-button :inline="true" :primary="true" @click="$router.push('mine/login')">登录</cube-button>
+          <cube-button :inline="true" :primary="true" @click="$router.push('mine/register')">注册</cube-button>
+        </div>
         <div v-else>
           <div class="user-name">{{userName}}</div>
           <cube-button :inline="true" :primary="true" @click="logout">注销</cube-button>
@@ -131,7 +132,7 @@ export default {
     }
 
     .user-name {
-      color: black;
+      color: black
       position: absolute;
       left: 50%;
       transform: translate3d(-50%, 130%, 0);

@@ -12,11 +12,14 @@
           <div>{{item.label}}</div>
         </cube-tab>
       </cube-tab-bar>
+
     </div>
   </div>
 </template>
 <script>
 import {mapActions,mapState} from 'vuex'
+import { errCB } from '@/components/utils'
+
 export default {
   data() {
     return {
@@ -41,7 +44,7 @@ export default {
   },
   async mounted() {
     if (!Object.prototype.hasOwnProperty.call(this.initData, 'heroes')) {
-      await this.getData()
+      await this.getData(errCB.bind(this))
     }
   },
   computed: {

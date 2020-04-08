@@ -48,6 +48,8 @@ import {showLogin} from '@/components/utils'
 import Headers from "@/components/headers.vue";
 import {  mapState,mapActions } from "vuex";
 import {  validate } from "@/api";
+import { errCB } from '@/components/utils'
+
 export default {
   data() {
     return {
@@ -89,9 +91,9 @@ export default {
     // 1 若已登录，将该信息发送到后台
     // 若未登录，则要求先登录
     async likeHandler() {
-      let res = await validate()
+      let res = await validate(errCB.bind(this))
       if (res.code == 0) {
-        await this.likeHeroHandler({id:this.data.id,userName:this.initData.userName})
+        await this.likeHeroHandler({id:this.data.id,userName:this.initData.userName},errCB.bind(this))
       } else {
         showLogin.call(this)
       }

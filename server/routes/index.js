@@ -167,6 +167,33 @@ router.get('/user/exit', (req, res) => {
   })
 })
 
+router.post('/user/register', (req, res) => {
+  let {userName, passWord} = req.body
+  console.log(req.body)
+  let user = userList.find(item => item.userName === userName)
+  if (user) {
+    res.json({
+      code: 1,
+      warnning: '该账号已被注册，请重新输入'
+    })
+  } else {
+    // 添加 token
+    let token = jwt.sign({ userName }, secret, { expiresIn: '1h' })
+    userList.push({userName, passWord})
+    fs.writeFile(`${__dirname}/data/user.json`, JSON.stringify(userList), 'utf8', err => {
+      if (err) throw err;
+      console.log('文件已被保存');
+    })
+    // 确定登陆成功后，获取用户个人数据并操作数据
+    getPersonalData(userName)
+    res.json({
+      code: 0,
+      personalData,
+      token
+    })
+  }
+})
+
 
 
 module.exports = router;

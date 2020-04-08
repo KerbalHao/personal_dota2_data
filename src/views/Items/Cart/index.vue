@@ -62,6 +62,8 @@
 import bubble from "@/components/Bubble";
 import { mapActions } from "vuex";
 import cartControl from "../Sub/cartControl";
+import { errCB } from '@/components/utils'
+
 
 const BALL_LEN = 10
 function createBalls() {
@@ -123,7 +125,7 @@ export default {
           href: 'javascript:;'
         },
         onConfirm: async () => {
-          await this.handleBuy(this.data)
+          await this.handleBuy(this.data,errCB.bind(this))
           this.hide()
         },
       }).show()
