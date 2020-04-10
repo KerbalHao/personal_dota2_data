@@ -125,7 +125,7 @@ export default {
           href: 'javascript:;'
         },
         onConfirm: async () => {
-          await this.handleBuy(this.data,errCB.bind(this))
+          await this.handleBuy(this.data, errCB.bind(this))
           this.hide()
         },
       }).show()

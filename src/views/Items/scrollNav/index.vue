@@ -2,7 +2,7 @@
   <div class="scroll-list-wrap">
     <cube-scroll ref="scroll" :data="items">
       <ul class="items-list">
-        <li class="item" v-for="(item,index) in items" :key="index"  @click="showDetail(item, bought)">
+        <li class="item" v-for="(item,index) in items" :key="index"  @click="showDetail(item, item.bought)">
           <div class="item-info">
             <img :src="item.icon" />
             <div class="info">
@@ -40,9 +40,6 @@ export default {
       type: Boolean,
       default: false
     }
-  },
-  mounted() {
-    console.log(this.items)
   },
   methods: {
     showDetail(item, bought) {

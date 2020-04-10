@@ -52,8 +52,8 @@
           </div>
         </div>
       </div>
-      <cube-button :primary='true' v-show='item.num === 0' @click="addToCart(item,'plus')" v-if='!bought'>加入购物车</cube-button>
-      <div class="cart-control" v-if='!bought' v-show='item.num > 0' >
+      <cube-button :primary='true' v-show='item.num === 0' @click="addToCart(item,'plus')" v-if='!inMinePage'>加入购物车</cube-button>
+      <div class="cart-control" v-if='!inMinePage' v-show='item.num > 0' >
         <cart-control :item='item' ></cart-control>
       </div>
     </div>
@@ -70,7 +70,7 @@ export default {
   data() {
     return {
       item: {},
-      bought: false
+      inMinePage: false
     };
   },
   components: {
@@ -85,9 +85,9 @@ export default {
       */
       this.item = item;
       if (this.$route.path.includes('mine')) {
-        this.bought = true
+        this.inMinePage = true
       } else {
-        this.bought = false
+        this.inMinePage = false
       }
       this.$refs.popup.show();
     },

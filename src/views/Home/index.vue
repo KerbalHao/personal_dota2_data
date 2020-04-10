@@ -33,12 +33,15 @@ export default {
   async mounted() {
     // 等待 APP.vue 中请求返回数据，在此组件中重复赋值，直到 passHero 得到值，停止计时器
     let timer
-    if (this.passHero.length == 0) {
+    if (!Object.prototype.hasOwnProperty.call(this.initData,'heroes')) {
       timer = setInterval(() => {
         this.passHero = this.initData.heroes
         if (this.passHero.length != 0) clearInterval(timer)
       }, 300);
+    } else {
+      this.passHero = this.initData.heroes
     }
+    
   },
   computed: {
     ...mapState(["initData"])

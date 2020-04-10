@@ -90,8 +90,8 @@ export default new Vuex.Store({
           if (item.numId == payload[i].numId){
             item.num = 0
             item.bought = true
-            item.bought_num = payload.bought_num
-            console.log(item)
+            item.bought_num += parseFloat(payload[i].bought_num)
+
           }
         }
         return item

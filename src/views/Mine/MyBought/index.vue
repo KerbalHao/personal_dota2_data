@@ -13,7 +13,7 @@ import Headers from "@/components/headers";
 import scrollNav from '../../Items/scrollNav' 
 import Drawer from "../../Items/Drawer";
 
-import {mapState} from 'vuex'
+import {mapState, mapMutations} from 'vuex'
 export default {
   data() {
     return {
@@ -28,23 +28,25 @@ export default {
       total += item.bought_num * item.RealCost
     })
     this.total = total
-
+    this.setCatagory()
+    console.log(this.category)
   },
   computed: {
     ...mapState(['userData','category'])
   },
   methods: {
-        confirm(category) {
+        ...mapMutations( ['setCatagory']),
+    confirm(category) {
       /*
        ** 用于父子通信，等待子组件传递回需要的数据，进行数据筛选分类
        */
 
       this.name = category;
-      this.data = this.initData.items.filter(item => {
-        if (item.Category === category) {
+      this.items  = this.userData.items.filter(item => {
+        if (item.Category === category && item.bought) {
           return true;
         }
-        if (category === "全部") {
+        if (category === "全部" && item.bought) {
           return true;
         }
       });
