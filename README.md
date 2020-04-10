@@ -9,8 +9,11 @@
 - 用户界面处理登录和注册事宜，且可查看已购买和已收藏。
 - 后端使用 jwt 校验用户是否登录
 - 用户数据保存在 server\routes\data 中
-
+- 英雄界面
+   
 ![英雄界面](https://cdn.jsdelivr.net/gh/kerbalhao/blog_images/img/2020/SxKVv5r5Cu.gif)
+- 物品界面
+ 
 ![物品界面](https://cdn.jsdelivr.net/gh/kerbalhao/blog_images/img/2020/AdLYeNBHWw.gif)
 ## 技术栈
 
@@ -39,7 +42,6 @@ function setRemUnit () {
 
 ### 启用后台服务
 ```
-cd server
 npm start 
 ```
 ### 启用开发环境
