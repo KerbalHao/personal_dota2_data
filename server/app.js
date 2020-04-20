@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req,res,next) => {
   let origins = ['http://localhost:8080','http://192.168.2.8:8080']
-  if( origins.includes(req.headers.origin) ){
+  if( origins.includes(req.headers.origin) ||  req.headers.origin.includes('192.168')){
     res.header('Access-Control-Allow-Origin',req.headers.origin)
     res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,Origin,X-Requested-With,Accept')
     res.header('Access-Control-Allow-Methods', 'PUT,OPTIONS,GET,HEAD,POST')
